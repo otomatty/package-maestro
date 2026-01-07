@@ -12,9 +12,17 @@ export interface PresetField {
 }
 
 export interface AppConfig {
+  id: string;
   presetName: string;
   fields: PresetField[];
 }
+
+export interface PresetStore {
+  activePresetId: string;
+  presets: AppConfig[];
+}
+
+export const MAX_PRESETS = 5;
 
 export interface FileData {
   name: string;
