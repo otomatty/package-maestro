@@ -25,6 +25,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import {
   DndContext,
   closestCenter,
@@ -44,11 +45,22 @@ import { CSS } from '@dnd-kit/utilities';
 import { PresetField, AppConfig } from '@/types';
 import { FieldDialog } from './FieldDialog';
 import { PreviewDialog } from './PreviewDialog';
+import { PresetSelector } from './PresetSelector';
+import { SampleImportDialog } from './SampleImportDialog';
 import { useLanguage } from '@/i18n/LanguageContext';
 
 interface SettingsPanelProps {
   config: AppConfig;
+  presets: AppConfig[];
+  activePresetId: string;
+  canCreatePreset: boolean;
+  canDeletePreset: boolean;
+  onSwitchPreset: (id: string) => void;
+  onCreatePreset: (name: string) => void;
+  onDuplicatePreset: (id: string) => void;
+  onDeletePreset: (id: string) => void;
   onAddField: (field: Omit<PresetField, 'id'>) => PresetField;
+  onAddFields: (fields: Omit<PresetField, 'id'>[]) => PresetField[];
   onUpdateField: (id: string, updates: Partial<PresetField>) => void;
   onDeleteField: (id: string) => void;
   onReorderFields: (activeId: string, overId: string) => void;
@@ -165,7 +177,16 @@ function SortableRow({ field, onEdit, onDelete, getTypeColor, getTypeLabel, t }:
 
 export function SettingsPanel({
   config,
+  presets,
+  activePresetId,
+  canCreatePreset,
+  canDeletePreset,
+  onSwitchPreset,
+  onCreatePreset,
+  onDuplicatePreset,
+  onDeletePreset,
   onAddField,
+  onAddFields,
   onUpdateField,
   onDeleteField,
   onReorderFields,
@@ -176,6 +197,7 @@ export function SettingsPanel({
 }: SettingsPanelProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [sampleImportOpen, setSampleImportOpen] = useState(false);
   const [editingField, setEditingField] = useState<PresetField | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -234,6 +256,10 @@ export function SettingsPanel({
     e.target.value = '';
   };
 
+  const handleSampleImport = (fields: Omit<PresetField, 'id'>[]) => {
+    onAddFields(fields);
+  };
+
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'text': return { bg: '#dbeafe', color: '#1e40af' };
@@ -276,6 +302,18 @@ export function SettingsPanel({
             {t('settingsTitle')}
           </Typography>
           
+          {/* Preset Selector */}
+          <PresetSelector
+            presets={presets}
+            activePresetId={activePresetId}
+            canCreatePreset={canCreatePreset}
+            canDeletePreset={canDeletePreset}
+            onSwitchPreset={onSwitchPreset}
+            onCreatePreset={onCreatePreset}
+            onDuplicatePreset={onDuplicatePreset}
+            onDeletePreset={onDeletePreset}
+          />
+          
           <TextField
             size="small"
             label={t('presetName')}
@@ -307,6 +345,20 @@ export function SettingsPanel({
             }}
           >
             {t('addField')}
+          </Button>
+
+          <Button
+            variant="outlined"
+            startIcon={<UploadFileIcon />}
+            onClick={() => setSampleImportOpen(true)}
+            sx={{
+              textTransform: 'none',
+              borderColor: '#10b981',
+              color: '#10b981',
+              '&:hover': { borderColor: '#059669', backgroundColor: '#ecfdf5' }
+            }}
+          >
+            {t('generateFromSample')}
           </Button>
 
           <Button
@@ -447,6 +499,12 @@ export function SettingsPanel({
         open={previewOpen}
         onClose={() => setPreviewOpen(false)}
         fields={config.fields}
+      />
+
+      <SampleImportDialog
+        open={sampleImportOpen}
+        onClose={() => setSampleImportOpen(false)}
+        onImport={handleSampleImport}
       />
     </Box>
   );

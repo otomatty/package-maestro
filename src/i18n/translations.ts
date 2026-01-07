@@ -52,6 +52,26 @@ export const translations = {
     copyToClipboard: 'コピー',
     copied: 'コピーしました！',
 
+    // Preset Management
+    selectPreset: 'プリセットを選択',
+    createPreset: '新規プリセット',
+    duplicatePreset: 'プリセットを複製',
+    deletePreset: 'プリセットを削除',
+    presetLimit: 'プリセットは最大5個まで作成できます',
+    cannotDeleteLast: '最後のプリセットは削除できません',
+    confirmDeletePreset: 'このプリセットを削除しますか？この操作は取り消せません。',
+
+    // Sample Import
+    generateFromSample: 'サンプルから生成',
+    sampleImportTitle: 'サンプルpackage.jsonからフィールドを生成',
+    selectSampleFile: 'ファイルを選択',
+    selectKeysToImport: 'インポートするキーを選択してください',
+    selectedCount: '選択中',
+    importSelected: '選択したフィールドをインポート',
+    selectOtherFile: '別のファイルを選択',
+    invalidJsonFormat: 'JSONの形式が正しくありません',
+    fileReadError: 'ファイルの読み込みに失敗しました',
+
     // FieldDialog
     addFieldTitle: 'フィールドを追加',
     editFieldTitle: 'フィールドを編集',
@@ -127,6 +147,26 @@ export const translations = {
     close: 'Close',
     copyToClipboard: 'Copy',
     copied: 'Copied!',
+
+    // Preset Management
+    selectPreset: 'Select Preset',
+    createPreset: 'New Preset',
+    duplicatePreset: 'Duplicate Preset',
+    deletePreset: 'Delete Preset',
+    presetLimit: 'Maximum 5 presets allowed',
+    cannotDeleteLast: 'Cannot delete the last preset',
+    confirmDeletePreset: 'Are you sure you want to delete this preset? This action cannot be undone.',
+
+    // Sample Import
+    generateFromSample: 'Generate from Sample',
+    sampleImportTitle: 'Generate fields from sample package.json',
+    selectSampleFile: 'Select File',
+    selectKeysToImport: 'Select keys to import',
+    selectedCount: 'Selected',
+    importSelected: 'Import Selected Fields',
+    selectOtherFile: 'Select Another File',
+    invalidJsonFormat: 'Invalid JSON format',
+    fileReadError: 'Failed to read file',
 
     // FieldDialog
     addFieldTitle: 'Add Field',

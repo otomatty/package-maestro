@@ -41,8 +41,17 @@ const Index = () => {
   const [showSettings, setShowSettings] = useState(false);
   const {
     config,
+    presets,
+    activePresetId,
     isLoaded,
+    canCreatePreset,
+    canDeletePreset,
+    createPreset,
+    duplicatePreset,
+    deletePreset,
+    switchPreset,
     addField,
+    addFields,
     updateField,
     deleteField,
     reorderFields,
@@ -97,7 +106,16 @@ const Index = () => {
             {showSettings ? (
               <SettingsPanel
                 config={config}
+                presets={presets}
+                activePresetId={activePresetId}
+                canCreatePreset={canCreatePreset}
+                canDeletePreset={canDeletePreset}
+                onSwitchPreset={switchPreset}
+                onCreatePreset={createPreset}
+                onDuplicatePreset={duplicatePreset}
+                onDeletePreset={deletePreset}
                 onAddField={addField}
+                onAddFields={addFields}
                 onUpdateField={updateField}
                 onDeleteField={deleteField}
                 onReorderFields={reorderFields}
