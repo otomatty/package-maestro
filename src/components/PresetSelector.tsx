@@ -5,9 +5,11 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Menu,
   Button,
   IconButton,
-  Tooltip,
+  ListItemIcon,
+  ListItemText,
   Typography,
   Dialog,
   DialogTitle,
@@ -16,6 +18,7 @@ import {
   TextField,
   Chip
 } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AddIcon from '@mui/icons-material/Add';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -44,9 +47,20 @@ export function PresetSelector({
   onDeletePreset
 }: PresetSelectorProps) {
   const { t } = useLanguage();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [newPresetName, setNewPresetName] = useState('');
+
+  const menuOpen = Boolean(anchorEl);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleCreate = () => {
     if (newPresetName.trim()) {
@@ -66,7 +80,7 @@ export function PresetSelector({
       <Box sx={{ 
         display: 'flex', 
         alignItems: 'center', 
-        gap: 2, 
+        gap: 1.5, 
         flexWrap: 'wrap',
         mb: 2 
       }}>
@@ -86,46 +100,57 @@ export function PresetSelector({
           </Select>
         </FormControl>
 
-        <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <Tooltip title={canCreatePreset ? t('createPreset') : t('presetLimit')}>
-            <span>
-              <IconButton
-                size="small"
-                onClick={() => setCreateDialogOpen(true)}
-                disabled={!canCreatePreset}
-                color="primary"
-              >
-                <AddIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
+        <IconButton
+          size="small"
+          onClick={handleMenuOpen}
+          aria-label="preset actions"
+        >
+          <MoreVertIcon />
+        </IconButton>
 
-          <Tooltip title={canCreatePreset ? t('duplicatePreset') : t('presetLimit')}>
-            <span>
-              <IconButton
-                size="small"
-                onClick={() => onDuplicatePreset(activePresetId)}
-                disabled={!canCreatePreset}
-                color="primary"
-              >
-                <ContentCopyIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
-
-          <Tooltip title={canDeletePreset ? t('deletePreset') : t('cannotDeleteLast')}>
-            <span>
-              <IconButton
-                size="small"
-                onClick={() => setDeleteDialogOpen(true)}
-                disabled={!canDeletePreset}
-                color="error"
-              >
-                <DeleteIcon />
-              </IconButton>
-            </span>
-          </Tooltip>
-        </Box>
+        <Menu
+          anchorEl={anchorEl}
+          open={menuOpen}
+          onClose={handleMenuClose}
+        >
+          <MenuItem
+            onClick={() => {
+              handleMenuClose();
+              setCreateDialogOpen(true);
+            }}
+            disabled={!canCreatePreset}
+          >
+            <ListItemIcon>
+              <AddIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>{t('createPreset')}</ListItemText>
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleMenuClose();
+              onDuplicatePreset(activePresetId);
+            }}
+            disabled={!canCreatePreset}
+          >
+            <ListItemIcon>
+              <ContentCopyIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>{t('duplicatePreset')}</ListItemText>
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleMenuClose();
+              setDeleteDialogOpen(true);
+            }}
+            disabled={!canDeletePreset}
+            sx={{ color: 'error.main' }}
+          >
+            <ListItemIcon>
+              <DeleteIcon fontSize="small" color="error" />
+            </ListItemIcon>
+            <ListItemText>{t('deletePreset')}</ListItemText>
+          </MenuItem>
+        </Menu>
 
         <Chip 
           label={`${presets.length}/${MAX_PRESETS}`} 
