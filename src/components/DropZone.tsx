@@ -3,6 +3,7 @@ import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import FolderZipIcon from '@mui/icons-material/FolderZip';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface DropZoneProps {
   onDrop: (e: React.DragEvent) => void;
@@ -12,6 +13,7 @@ interface DropZoneProps {
 
 export function DropZone({ onDrop, onOpenFile, isLoading }: DropZoneProps) {
   const [isDragOver, setIsDragOver] = useState(false);
+  const { t } = useLanguage();
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -71,7 +73,7 @@ export function DropZone({ onDrop, onOpenFile, isLoading }: DropZoneProps) {
           <>
             <CircularProgress size={48} sx={{ color: '#2563eb' }} />
             <Typography color="text.secondary">
-              Loading file...
+              {t('loading')}
             </Typography>
           </>
         ) : (
@@ -92,10 +94,10 @@ export function DropZone({ onDrop, onOpenFile, isLoading }: DropZoneProps) {
             
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="h6" sx={{ fontWeight: 600, color: '#1e293b', mb: 1 }}>
-                Drop your file here
+                {isDragOver ? t('dropHere') : t('dropzoneTitle')}
               </Typography>
               <Typography color="text.secondary" sx={{ mb: 2 }}>
-                or click to browse
+                {t('dropzoneSubtitle')}
               </Typography>
             </Box>
 
@@ -156,7 +158,7 @@ export function DropZone({ onDrop, onOpenFile, isLoading }: DropZoneProps) {
                 }
               }}
             >
-              Open File
+              {t('openFile')}
             </Button>
           </>
         )}
@@ -171,8 +173,7 @@ export function DropZone({ onDrop, onOpenFile, isLoading }: DropZoneProps) {
           maxWidth: 400
         }}
       >
-        Supports package.json files and ZIP archives containing package.json.
-        Changes are saved directly to your original file.
+        {t('supportedFormats')}
       </Typography>
     </Box>
   );

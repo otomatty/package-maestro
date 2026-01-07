@@ -1,3 +1,5 @@
+import JSZip from 'jszip';
+
 export type FieldType = 'text' | 'number' | 'boolean' | 'select';
 
 export interface PresetField {
@@ -19,7 +21,7 @@ export interface FileData {
   content: Record<string, unknown>;
   handle: FileSystemFileHandle | null;
   isZip: boolean;
-  zipInstance?: unknown;
+  zipInstance?: JSZip;
   packageJsonPath?: string;
 }
 

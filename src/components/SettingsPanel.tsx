@@ -25,6 +25,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import { PresetField, AppConfig } from '@/types';
 import { FieldDialog } from './FieldDialog';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface SettingsPanelProps {
   config: AppConfig;
@@ -51,6 +52,7 @@ export function SettingsPanel({
   const [editingField, setEditingField] = useState<PresetField | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useLanguage();
 
   const handleAddClick = () => {
     setEditingField(null);
@@ -81,7 +83,7 @@ export function SettingsPanel({
         await onImport(file);
         setImportError(null);
       } catch (error) {
-        setImportError((error as Error).message || 'Failed to import preset');
+        setImportError((error as Error).message || t('importError'));
       }
     }
     e.target.value = '';
@@ -94,6 +96,16 @@ export function SettingsPanel({
       case 'boolean': return { bg: '#fef3c7', color: '#92400e' };
       case 'select': return { bg: '#f3e8ff', color: '#7e22ce' };
       default: return { bg: '#f1f5f9', color: '#475569' };
+    }
+  };
+
+  const getTypeLabel = (type: string) => {
+    switch (type) {
+      case 'text': return t('typeText');
+      case 'number': return t('typeNumber');
+      case 'boolean': return t('typeBoolean');
+      case 'select': return t('typeSelect');
+      default: return type;
     }
   };
 
@@ -116,12 +128,12 @@ export function SettingsPanel({
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 600, color: '#1e293b', mb: 2 }}>
-            Preset Configuration
+            {t('settingsTitle')}
           </Typography>
           
           <TextField
             size="small"
-            label="Preset Name"
+            label={t('presetName')}
             value={config.presetName}
             onChange={(e) => onUpdatePresetName(e.target.value)}
             sx={{ width: 300 }}
@@ -149,7 +161,7 @@ export function SettingsPanel({
               '&:hover': { backgroundColor: '#1d4ed8' }
             }}
           >
-            Add Field
+            {t('addField')}
           </Button>
 
           <Divider orientation="vertical" flexItem />
@@ -165,7 +177,7 @@ export function SettingsPanel({
               '&:hover': { borderColor: '#cbd5e1', backgroundColor: '#f8fafc' }
             }}
           >
-            Export
+            {t('export')}
           </Button>
 
           <Button
@@ -179,7 +191,7 @@ export function SettingsPanel({
               '&:hover': { borderColor: '#cbd5e1', backgroundColor: '#f8fafc' }
             }}
           >
-            Import
+            {t('import')}
           </Button>
 
           <input
@@ -192,7 +204,7 @@ export function SettingsPanel({
 
           <Box sx={{ flexGrow: 1 }} />
 
-          <Tooltip title="Reset to default preset">
+          <Tooltip title={t('resetDefault')}>
             <Button
               variant="outlined"
               startIcon={<RestartAltIcon />}
@@ -204,7 +216,7 @@ export function SettingsPanel({
                 '&:hover': { borderColor: '#f87171', backgroundColor: '#fef2f2' }
               }}
             >
-              Reset
+              {t('resetDefault')}
             </Button>
           </Tooltip>
         </Box>
@@ -220,18 +232,18 @@ export function SettingsPanel({
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: '#fafafa' }}>
-                <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>Label</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>Key Path</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>Type</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>Options</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 600, color: '#64748b' }}>Actions</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>{t('label')}</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>{t('keyPath')}</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>{t('type')}</TableCell>
+                <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>{t('selectOptions')}</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 600, color: '#64748b' }}>{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {config.fields.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4, color: '#94a3b8' }}>
-                    No fields configured. Click "Add Field" to get started.
+                    {t('noFields')}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -257,7 +269,7 @@ export function SettingsPanel({
                       </TableCell>
                       <TableCell>
                         <Chip
-                          label={field.type}
+                          label={getTypeLabel(field.type)}
                           size="small"
                           sx={{
                             backgroundColor: typeColors.bg,
@@ -276,7 +288,7 @@ export function SettingsPanel({
                         )}
                       </TableCell>
                       <TableCell align="right">
-                        <Tooltip title="Edit">
+                        <Tooltip title={t('editFieldTitle')}>
                           <IconButton
                             size="small"
                             onClick={() => handleEditClick(field)}
@@ -285,7 +297,7 @@ export function SettingsPanel({
                             <EditIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Delete">
+                        <Tooltip title={t('actions')}>
                           <IconButton
                             size="small"
                             onClick={() => onDeleteField(field.id)}

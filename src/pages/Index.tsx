@@ -7,6 +7,7 @@ import { SettingsPanel } from '@/components/SettingsPanel';
 import { BrowserWarning } from '@/components/BrowserWarning';
 import { usePresets } from '@/hooks/usePresets';
 import { useFileHandler } from '@/hooks/useFileHandler';
+import { LanguageProvider } from '@/i18n/LanguageContext';
 
 const theme = createTheme({
   typography: {
@@ -69,58 +70,60 @@ const Index = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
-        <Header 
-          onSettingsClick={() => setShowSettings(!showSettings)} 
-          showSettings={showSettings}
-        />
+      <LanguageProvider>
+        <CssBaseline />
+        <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+          <Header 
+            onSettingsClick={() => setShowSettings(!showSettings)} 
+            showSettings={showSettings}
+          />
 
-        <BrowserWarning />
+          <BrowserWarning />
 
-        {error && (
-          <Box sx={{ p: 2, maxWidth: 700, mx: 'auto' }}>
-            <Alert 
-              severity="error" 
-              onClose={() => setError(null)}
-              sx={{ borderRadius: 2 }}
-            >
-              {error}
-            </Alert>
-          </Box>
-        )}
-
-        <Box sx={{ py: 3 }}>
-          {showSettings ? (
-            <SettingsPanel
-              config={config}
-              onAddField={addField}
-              onUpdateField={updateField}
-              onDeleteField={deleteField}
-              onUpdatePresetName={updatePresetName}
-              onExport={exportConfig}
-              onImport={importConfig}
-              onReset={resetToDefault}
-            />
-          ) : fileData ? (
-            <EditorForm
-              fileName={fileData.name}
-              isZip={fileData.isZip}
-              fields={config.fields}
-              getValue={getValue}
-              updateValue={updateValue}
-              onSave={saveFile}
-              onClose={closeFile}
-            />
-          ) : (
-            <DropZone
-              onDrop={handleDrop}
-              onOpenFile={openFile}
-              isLoading={isLoading}
-            />
+          {error && (
+            <Box sx={{ p: 2, maxWidth: 700, mx: 'auto' }}>
+              <Alert 
+                severity="error" 
+                onClose={() => setError(null)}
+                sx={{ borderRadius: 2 }}
+              >
+                {error}
+              </Alert>
+            </Box>
           )}
+
+          <Box sx={{ py: 3 }}>
+            {showSettings ? (
+              <SettingsPanel
+                config={config}
+                onAddField={addField}
+                onUpdateField={updateField}
+                onDeleteField={deleteField}
+                onUpdatePresetName={updatePresetName}
+                onExport={exportConfig}
+                onImport={importConfig}
+                onReset={resetToDefault}
+              />
+            ) : fileData ? (
+              <EditorForm
+                fileName={fileData.name}
+                isZip={fileData.isZip}
+                fields={config.fields}
+                getValue={getValue}
+                updateValue={updateValue}
+                onSave={saveFile}
+                onClose={closeFile}
+              />
+            ) : (
+              <DropZone
+                onDrop={handleDrop}
+                onOpenFile={openFile}
+                isLoading={isLoading}
+              />
+            )}
+          </Box>
         </Box>
-      </Box>
+      </LanguageProvider>
     </ThemeProvider>
   );
 };

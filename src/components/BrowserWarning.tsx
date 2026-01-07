@@ -1,7 +1,9 @@
 import { Box, Alert, AlertTitle, Link } from '@mui/material';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 export function BrowserWarning() {
+  const { t } = useLanguage();
   const isSupported = 'showOpenFilePicker' in window;
 
   if (isSupported) return null;
@@ -17,14 +19,12 @@ export function BrowserWarning() {
           '& .MuiAlert-message': { width: '100%' }
         }}
       >
-        <AlertTitle sx={{ fontWeight: 600 }}>Browser Not Supported</AlertTitle>
+        <AlertTitle sx={{ fontWeight: 600 }}>{t('browserNotSupported')}</AlertTitle>
         <Box component="p" sx={{ mb: 1 }}>
-          This application requires the File System Access API, which is only available in 
-          Chromium-based browsers.
+          {t('browserWarningMessage')}
         </Box>
         <Box component="p" sx={{ mb: 0 }}>
-          Please use <strong>Google Chrome</strong>, <strong>Microsoft Edge</strong>, or 
-          another Chromium-based browser for full functionality.
+          {t('browserWarningInstruction')}
         </Box>
         <Box sx={{ mt: 2 }}>
           <Link 
@@ -32,13 +32,13 @@ export function BrowserWarning() {
             target="_blank"
             sx={{ mr: 2 }}
           >
-            Download Chrome
+            {t('downloadChrome')}
           </Link>
           <Link 
             href="https://www.microsoft.com/edge" 
             target="_blank"
           >
-            Download Edge
+            {t('downloadEdge')}
           </Link>
         </Box>
       </Alert>
