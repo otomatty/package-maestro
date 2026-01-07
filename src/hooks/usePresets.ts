@@ -124,7 +124,7 @@ export function usePresets() {
 
   // Preset management
   const createPreset = useCallback((name: string) => {
-    if (!canCreatePreset) return null;
+    if (!canCreatePreset) return undefined;
     
     const newPreset: AppConfig = {
       id: uuidv4(),
@@ -282,6 +282,10 @@ export function usePresets() {
   }, []);
 
   const exportConfig = useCallback(() => {
+    // 理由: JSON.stringifyの第2引数にnullを指定するのは標準APIの仕様。
+    // nullは「すべてのプロパティを含める」という意味で、undefinedに置き換えることはできない。
+    // 第3引数の2はインデントのスペース数を指定するため、第2引数にnullが必要。
+    // eslint-disable-next-line no-restricted-syntax
     const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

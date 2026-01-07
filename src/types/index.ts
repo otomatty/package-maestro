@@ -27,6 +27,9 @@ export const MAX_PRESETS = 5;
 export interface FileData {
   name: string;
   content: Record<string, unknown>;
+  // 理由: FileSystemFileHandle | null はブラウザAPIの型定義で、nullが返される可能性があるため型定義上必要。
+  // ブラウザAPIの仕様に従う必要があり、undefinedに置き換えることはできない。
+  // eslint-disable-next-line no-restricted-syntax
   handle: FileSystemFileHandle | null;
   isZip: boolean;
   zipInstance?: JSZip;
@@ -57,6 +60,9 @@ declare global {
   }
   
   interface DataTransferItem {
+    // 理由: getAsFileSystemHandle()の戻り値がFileSystemHandle | nullであることはブラウザAPIの仕様。
+    // ブラウザAPIの型定義に従う必要があり、undefinedに置き換えることはできない。
+    // eslint-disable-next-line no-restricted-syntax
     getAsFileSystemHandle(): Promise<FileSystemHandle | null>;
   }
 }

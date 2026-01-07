@@ -190,7 +190,7 @@ export function SettingsPanel({
   const [editingField, setEditingField] = useState<PresetField | undefined>(undefined);
   const [importError, setImportError] = useState<string | undefined>(undefined);
   const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | undefined>(undefined);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(undefined);
   const { t } = useLanguage();
 
   const sensors = useSensors(
@@ -255,7 +255,7 @@ export function SettingsPanel({
   };
 
   const handleMenuClose = () => {
-    setMenuAnchorEl(null);
+    setMenuAnchorEl(undefined);
   };
 
   const handleMenuAction = (action: () => void) => {

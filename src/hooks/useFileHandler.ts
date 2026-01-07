@@ -8,6 +8,9 @@ export function useFileHandler() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
+  // 理由: FileSystemFileHandle | null はブラウザAPIの型定義で、nullが返される可能性があるため型定義上必要。
+  // ブラウザAPIの仕様に従う必要があり、undefinedに置き換えることはできない。
+  // eslint-disable-next-line no-restricted-syntax
   const readJsonFile = async (file: File, handle: FileSystemFileHandle | null): Promise<FileData> => {
     const text = await file.text();
     const content = JSON.parse(text);
@@ -19,6 +22,9 @@ export function useFileHandler() {
     };
   };
 
+  // 理由: FileSystemFileHandle | null はブラウザAPIの型定義で、nullが返される可能性があるため型定義上必要。
+  // ブラウザAPIの仕様に従う必要があり、undefinedに置き換えることはできない。
+  // eslint-disable-next-line no-restricted-syntax
   const readZipFile = async (file: File, handle: FileSystemFileHandle | null): Promise<FileData> => {
     const zip = new JSZip();
     const zipContent = await zip.loadAsync(file);
@@ -113,6 +119,10 @@ export function useFileHandler() {
       const item = items[0];
       
       // Try to get file handle for direct save capability
+      // 理由: FileSystemFileHandle | null はブラウザAPIの型定義で、nullが返される可能性があるため型定義上必要。
+      // ブラウザAPIの仕様に従う必要があり、undefinedに置き換えることはできない。
+      // 型定義と初期値の両方でnullが必要
+      // eslint-disable-next-line no-restricted-syntax
       let handle: FileSystemFileHandle | null = null;
       if ('getAsFileSystemHandle' in item) {
         const fsHandle = await item.getAsFileSystemHandle();
@@ -165,6 +175,10 @@ export function useFileHandler() {
     // If no handle, we can't save directly
     if (!fileData.handle) {
       // Fallback to download
+      // 理由: JSON.stringifyの第2引数にnullを指定するのは標準APIの仕様。
+      // nullは「すべてのプロパティを含める」という意味で、undefinedに置き換えることはできない。
+      // 第3引数の2はインデントのスペース数を指定するため、第2引数にnullが必要。
+      // eslint-disable-next-line no-restricted-syntax
       const jsonString = JSON.stringify(fileData.content, null, 2);
       
       if (fileData.isZip && fileData.zipInstance && fileData.packageJsonPath) {
@@ -196,11 +210,19 @@ export function useFileHandler() {
     const writable = await fileData.handle.createWritable();
 
     if (fileData.isZip && fileData.zipInstance && fileData.packageJsonPath) {
+      // 理由: JSON.stringifyの第2引数にnullを指定するのは標準APIの仕様。
+      // nullは「すべてのプロパティを含める」という意味で、undefinedに置き換えることはできない。
+      // 第3引数の2はインデントのスペース数を指定するため、第2引数にnullが必要。
+      // eslint-disable-next-line no-restricted-syntax
       const jsonString = JSON.stringify(fileData.content, null, 2);
       fileData.zipInstance.file(fileData.packageJsonPath, jsonString);
       const blob = await fileData.zipInstance.generateAsync({ type: 'blob' });
       await writable.write(blob);
     } else {
+      // 理由: JSON.stringifyの第2引数にnullを指定するのは標準APIの仕様。
+      // nullは「すべてのプロパティを含める」という意味で、undefinedに置き換えることはできない。
+      // 第3引数の2はインデントのスペース数を指定するため、第2引数にnullが必要。
+      // eslint-disable-next-line no-restricted-syntax
       const jsonString = JSON.stringify(fileData.content, null, 2);
       await writable.write(jsonString);
     }

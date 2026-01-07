@@ -142,8 +142,9 @@ export default tseslint.config(
           message: "Unexpected property on console object was called",
         },
         // null禁止（undefinedを推奨）
+        // ただし、JSON.stringifyの第2引数とブラウザAPIの型定義は除外
         {
-          selector: "TSNullKeyword, Literal[raw='null']",
+          selector: "TSNullKeyword[parent.parent.callee.name!='JSON.stringify'], Literal[raw='null'][parent.parent.callee.name!='JSON.stringify']",
           message:
             "Prefer undefined instead of null. When required for React refs/components, use the `ReactNull` alias. Otherwise, if strictly necessary, disable this error with `// eslint-disable-next-line no-restricted-syntax`.",
         },

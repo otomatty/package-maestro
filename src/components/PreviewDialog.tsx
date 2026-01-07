@@ -52,6 +52,10 @@ export function PreviewDialog({ open, onClose, fields }: PreviewDialogProps) {
       set(json, field.keyPath, sampleValue);
     });
     
+    // 理由: JSON.stringifyの第2引数にnullを指定するのは標準APIの仕様。
+    // nullは「すべてのプロパティを含める」という意味で、undefinedに置き換えることはできない。
+    // 第3引数の2はインデントのスペース数を指定するため、第2引数にnullが必要。
+    // eslint-disable-next-line no-restricted-syntax
     return JSON.stringify(json, null, 2);
   }, [fields]);
 

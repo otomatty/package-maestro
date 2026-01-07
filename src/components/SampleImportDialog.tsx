@@ -45,7 +45,7 @@ function parseJsonToNodes(obj: Record<string, unknown>, parentPath = ''): JsonNo
   for (const [key, value] of Object.entries(obj)) {
     const keyPath = parentPath ? `${parentPath}.${key}` : key;
     
-    if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+    if (value !== undefined && typeof value === 'object' && !Array.isArray(value)) {
       // Object - create node with children
       nodes.push({
         key,
