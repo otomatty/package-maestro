@@ -251,7 +251,7 @@ export function SampleImportDialog({ open, onClose, onImport }: SampleImportDial
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>{t('sampleImportTitle')}</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ pt: 2.5 }}>
         {!jsonData ? (
           <Box sx={{ py: 4, textAlign: 'center' }}>
             <Button

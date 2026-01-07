@@ -163,7 +163,7 @@ export function PresetSelector({
       {/* Create Preset Dialog */}
       <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)}>
         <DialogTitle>{t('createPreset')}</DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ pt: 2.5 }}>
           <TextField
             autoFocus
             margin="dense"
@@ -188,7 +188,7 @@ export function PresetSelector({
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>{t('deletePreset')}</DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ pt: 2.5 }}>
           <Typography>
             {t('confirmDeletePreset')}
           </Typography>

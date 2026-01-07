@@ -84,18 +84,12 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
       onClose={onClose}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 2
-        }
-      }}
     >
       <DialogTitle sx={{ 
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center',
         borderBottom: '1px solid #e2e8f0',
-        pb: 2
       }}>
         <Typography variant="h6" sx={{ fontWeight: 600 }}>
           {editField ? t('editFieldTitle') : t('addFieldTitle')}
@@ -105,7 +99,7 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ pt: 3 }}>
+      <DialogContent sx={{ pt: 2.5 }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
           <TextField
             label={t('keyPath')}

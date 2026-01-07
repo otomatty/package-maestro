@@ -101,7 +101,7 @@ export function PreviewDialog({ open, onClose, fields }: PreviewDialogProps) {
           </IconButton>
         </DialogTitle>
 
-        <DialogContent sx={{ p: 0 }}>
+        <DialogContent sx={{ p: 0, pt: 2.5 }}>
           <Box
             sx={{
               position: 'relative',

@@ -150,6 +150,10 @@
   background-color: hsl(var(--primary-hover)) !important;
 }
 
+.MuiDialogContent-root {
+  padding-top: 20px !important;
+}
+
 /* Smooth transitions */
 .transition-smooth {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
