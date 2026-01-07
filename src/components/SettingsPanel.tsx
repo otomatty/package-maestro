@@ -15,7 +15,11 @@ import {
   Tooltip,
   TextField,
   Divider,
-  Alert
+  Alert,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -26,6 +30,7 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
   DndContext,
   closestCenter,
@@ -200,6 +205,7 @@ export function SettingsPanel({
   const [sampleImportOpen, setSampleImportOpen] = useState(false);
   const [editingField, setEditingField] = useState<PresetField | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
 
@@ -258,6 +264,19 @@ export function SettingsPanel({
 
   const handleSampleImport = (fields: Omit<PresetField, 'id'>[]) => {
     onAddFields(fields);
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
+  const handleMenuAction = (action: () => void) => {
+    action();
+    handleMenuClose();
   };
 
   const getTypeColor = (type: string) => {
@@ -330,9 +349,11 @@ export function SettingsPanel({
             display: 'flex',
             flexWrap: 'wrap',
             gap: 1.5,
-            borderBottom: '1px solid #e2e8f0'
+            borderBottom: '1px solid #e2e8f0',
+            alignItems: 'center'
           }}
         >
+          {/* Primary Actions */}
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -345,20 +366,6 @@ export function SettingsPanel({
             }}
           >
             {t('addField')}
-          </Button>
-
-          <Button
-            variant="outlined"
-            startIcon={<UploadFileIcon />}
-            onClick={() => setSampleImportOpen(true)}
-            sx={{
-              textTransform: 'none',
-              borderColor: '#10b981',
-              color: '#10b981',
-              '&:hover': { borderColor: '#059669', backgroundColor: '#ecfdf5' }
-            }}
-          >
-            {t('generateFromSample')}
           </Button>
 
           <Button
@@ -376,12 +383,13 @@ export function SettingsPanel({
             {t('preview')}
           </Button>
 
-          <Divider orientation="vertical" flexItem />
+          <Box sx={{ flexGrow: 1 }} />
 
+          {/* More Actions Menu */}
           <Button
             variant="outlined"
-            startIcon={<FileDownloadIcon />}
-            onClick={onExport}
+            startIcon={<MoreVertIcon />}
+            onClick={handleMenuOpen}
             sx={{
               textTransform: 'none',
               borderColor: '#e2e8f0',
@@ -389,22 +397,56 @@ export function SettingsPanel({
               '&:hover': { borderColor: '#cbd5e1', backgroundColor: '#f8fafc' }
             }}
           >
-            {t('export')}
+            {t('moreActions')}
           </Button>
 
-          <Button
-            variant="outlined"
-            startIcon={<FileUploadIcon />}
-            onClick={handleImportClick}
-            sx={{
-              textTransform: 'none',
-              borderColor: '#e2e8f0',
-              color: '#64748b',
-              '&:hover': { borderColor: '#cbd5e1', backgroundColor: '#f8fafc' }
+          <Menu
+            anchorEl={menuAnchorEl}
+            open={Boolean(menuAnchorEl)}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
             }}
           >
-            {t('import')}
-          </Button>
+            <MenuItem onClick={() => handleMenuAction(() => setSampleImportOpen(true))}>
+              <ListItemIcon>
+                <UploadFileIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>{t('generateFromSample')}</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={() => handleMenuAction(() => onExport())}>
+              <ListItemIcon>
+                <FileDownloadIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>{t('export')}</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={() => handleMenuAction(() => handleImportClick())}>
+              <ListItemIcon>
+                <FileUploadIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>{t('import')}</ListItemText>
+            </MenuItem>
+            <Divider />
+            <MenuItem 
+              onClick={() => handleMenuAction(() => onReset())}
+              sx={{
+                color: '#dc2626',
+                '&:hover': {
+                  backgroundColor: '#fef2f2'
+                }
+              }}
+            >
+              <ListItemIcon>
+                <RestartAltIcon fontSize="small" sx={{ color: '#dc2626' }} />
+              </ListItemIcon>
+              <ListItemText>{t('resetDefault')}</ListItemText>
+            </MenuItem>
+          </Menu>
 
           <input
             type="file"
@@ -413,24 +455,6 @@ export function SettingsPanel({
             accept=".json"
             style={{ display: 'none' }}
           />
-
-          <Box sx={{ flexGrow: 1 }} />
-
-          <Tooltip title={t('resetDefault')}>
-            <Button
-              variant="outlined"
-              startIcon={<RestartAltIcon />}
-              onClick={onReset}
-              sx={{
-                textTransform: 'none',
-                borderColor: '#fecaca',
-                color: '#dc2626',
-                '&:hover': { borderColor: '#f87171', backgroundColor: '#fef2f2' }
-              }}
-            >
-              {t('resetDefault')}
-            </Button>
-          </Tooltip>
         </Box>
 
         {importError && (
