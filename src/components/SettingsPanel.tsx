@@ -23,6 +23,23 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { PresetField, AppConfig } from '@/types';
 import { FieldDialog } from './FieldDialog';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -32,10 +49,116 @@ interface SettingsPanelProps {
   onAddField: (field: Omit<PresetField, 'id'>) => PresetField;
   onUpdateField: (id: string, updates: Partial<PresetField>) => void;
   onDeleteField: (id: string) => void;
+  onReorderFields: (activeId: string, overId: string) => void;
   onUpdatePresetName: (name: string) => void;
   onExport: () => void;
   onImport: (file: File) => Promise<void>;
   onReset: () => void;
+}
+
+interface SortableRowProps {
+  field: PresetField;
+  onEdit: (field: PresetField) => void;
+  onDelete: (id: string) => void;
+  getTypeColor: (type: string) => { bg: string; color: string };
+  getTypeLabel: (type: string) => string;
+  t: (key: string) => string;
+}
+
+function SortableRow({ field, onEdit, onDelete, getTypeColor, getTypeLabel, t }: SortableRowProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: field.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    backgroundColor: isDragging ? '#f1f5f9' : 'transparent'
+  };
+
+  const typeColors = getTypeColor(field.type);
+
+  return (
+    <TableRow ref={setNodeRef} style={style} hover>
+      <TableCell sx={{ width: 48, p: 1 }}>
+        <IconButton
+          {...attributes}
+          {...listeners}
+          size="small"
+          sx={{ 
+            cursor: 'grab',
+            color: '#94a3b8',
+            '&:hover': { color: '#64748b' },
+            '&:active': { cursor: 'grabbing' }
+          }}
+        >
+          <DragIndicatorIcon fontSize="small" />
+        </IconButton>
+      </TableCell>
+      <TableCell sx={{ fontWeight: 500 }}>{field.label}</TableCell>
+      <TableCell>
+        <Typography
+          component="code"
+          sx={{
+            fontFamily: 'monospace',
+            fontSize: '0.85rem',
+            backgroundColor: '#f1f5f9',
+            px: 1,
+            py: 0.5,
+            borderRadius: 1
+          }}
+        >
+          {field.keyPath}
+        </Typography>
+      </TableCell>
+      <TableCell>
+        <Chip
+          label={getTypeLabel(field.type)}
+          size="small"
+          sx={{
+            backgroundColor: typeColors.bg,
+            color: typeColors.color,
+            fontWeight: 500
+          }}
+        />
+      </TableCell>
+      <TableCell>
+        {field.selectOptions?.length ? (
+          <Typography variant="body2" sx={{ color: '#64748b' }}>
+            {field.selectOptions.join(', ')}
+          </Typography>
+        ) : (
+          <Typography variant="body2" sx={{ color: '#cbd5e1' }}>—</Typography>
+        )}
+      </TableCell>
+      <TableCell align="right">
+        <Tooltip title={t('editFieldTitle')}>
+          <IconButton
+            size="small"
+            onClick={() => onEdit(field)}
+            sx={{ color: '#64748b' }}
+          >
+            <EditIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={t('actions')}>
+          <IconButton
+            size="small"
+            onClick={() => onDelete(field.id)}
+            sx={{ color: '#ef4444' }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </TableCell>
+    </TableRow>
+  );
 }
 
 export function SettingsPanel({
@@ -43,6 +166,7 @@ export function SettingsPanel({
   onAddField,
   onUpdateField,
   onDeleteField,
+  onReorderFields,
   onUpdatePresetName,
   onExport,
   onImport,
@@ -53,6 +177,24 @@ export function SettingsPanel({
   const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8
+      }
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      onReorderFields(active.id as string, over.id as string);
+    }
+  };
 
   const handleAddClick = () => {
     setEditingField(null);
@@ -232,6 +374,7 @@ export function SettingsPanel({
           <Table>
             <TableHead>
               <TableRow sx={{ backgroundColor: '#fafafa' }}>
+                <TableCell sx={{ width: 48, p: 1 }} />
                 <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>{t('label')}</TableCell>
                 <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>{t('keyPath')}</TableCell>
                 <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>{t('type')}</TableCell>
@@ -242,74 +385,33 @@ export function SettingsPanel({
             <TableBody>
               {config.fields.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4, color: '#94a3b8' }}>
+                  <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4, color: '#94a3b8' }}>
                     {t('noFields')}
                   </TableCell>
                 </TableRow>
               ) : (
-                config.fields.map((field) => {
-                  const typeColors = getTypeColor(field.type);
-                  return (
-                    <TableRow key={field.id} hover>
-                      <TableCell sx={{ fontWeight: 500 }}>{field.label}</TableCell>
-                      <TableCell>
-                        <Typography
-                          component="code"
-                          sx={{
-                            fontFamily: 'monospace',
-                            fontSize: '0.85rem',
-                            backgroundColor: '#f1f5f9',
-                            px: 1,
-                            py: 0.5,
-                            borderRadius: 1
-                          }}
-                        >
-                          {field.keyPath}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          label={getTypeLabel(field.type)}
-                          size="small"
-                          sx={{
-                            backgroundColor: typeColors.bg,
-                            color: typeColors.color,
-                            fontWeight: 500
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        {field.selectOptions?.length ? (
-                          <Typography variant="body2" sx={{ color: '#64748b' }}>
-                            {field.selectOptions.join(', ')}
-                          </Typography>
-                        ) : (
-                          <Typography variant="body2" sx={{ color: '#cbd5e1' }}>—</Typography>
-                        )}
-                      </TableCell>
-                      <TableCell align="right">
-                        <Tooltip title={t('editFieldTitle')}>
-                          <IconButton
-                            size="small"
-                            onClick={() => handleEditClick(field)}
-                            sx={{ color: '#64748b' }}
-                          >
-                            <EditIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title={t('actions')}>
-                          <IconButton
-                            size="small"
-                            onClick={() => onDeleteField(field.id)}
-                            sx={{ color: '#ef4444' }}
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={config.fields.map(f => f.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {config.fields.map((field) => (
+                      <SortableRow
+                        key={field.id}
+                        field={field}
+                        onEdit={handleEditClick}
+                        onDelete={onDeleteField}
+                        getTypeColor={getTypeColor}
+                        getTypeLabel={getTypeLabel}
+                        t={t as (key: string) => string}
+                      />
+                    ))}
+                  </SortableContext>
+                </DndContext>
               )}
             </TableBody>
           </Table>

@@ -95,6 +95,21 @@ export function usePresets() {
     }));
   }, []);
 
+  const reorderFields = useCallback((activeId: string, overId: string) => {
+    setConfig(prev => {
+      const oldIndex = prev.fields.findIndex(f => f.id === activeId);
+      const newIndex = prev.fields.findIndex(f => f.id === overId);
+      
+      if (oldIndex === -1 || newIndex === -1) return prev;
+      
+      const newFields = [...prev.fields];
+      const [removed] = newFields.splice(oldIndex, 1);
+      newFields.splice(newIndex, 0, removed);
+      
+      return { ...prev, fields: newFields };
+    });
+  }, []);
+
   const updatePresetName = useCallback((name: string) => {
     setConfig(prev => ({ ...prev, presetName: name }));
   }, []);
@@ -142,6 +157,7 @@ export function usePresets() {
     addField,
     updateField,
     deleteField,
+    reorderFields,
     updatePresetName,
     exportConfig,
     importConfig,

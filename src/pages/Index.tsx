@@ -45,6 +45,7 @@ const Index = () => {
     addField,
     updateField,
     deleteField,
+    reorderFields,
     updatePresetName,
     exportConfig,
     importConfig,
@@ -99,6 +100,7 @@ const Index = () => {
                 onAddField={addField}
                 onUpdateField={updateField}
                 onDeleteField={deleteField}
+                onReorderFields={reorderFields}
                 onUpdatePresetName={updatePresetName}
                 onExport={exportConfig}
                 onImport={importConfig}
