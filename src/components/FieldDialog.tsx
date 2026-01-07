@@ -18,6 +18,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { PresetField, FieldType } from '@/types';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface FieldDialogProps {
   open: boolean;
@@ -33,6 +34,7 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
   const [selectOptions, setSelectOptions] = useState<string[]>([]);
   const [newOption, setNewOption] = useState('');
   const [defaultValue, setDefaultValue] = useState('');
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (editField) {
@@ -96,7 +98,7 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
         pb: 2
       }}>
         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-          {editField ? 'Edit Field' : 'Add New Field'}
+          {editField ? t('editFieldTitle') : t('addFieldTitle')}
         </Typography>
         <IconButton onClick={onClose} size="small">
           <CloseIcon />
@@ -106,49 +108,49 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
       <DialogContent sx={{ pt: 3 }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
           <TextField
-            label="Key Path"
+            label={t('keyPath')}
             value={keyPath}
             onChange={(e) => setKeyPath(e.target.value)}
-            placeholder="e.g., version, scripts.start, config.theme"
+            placeholder={t('keyPathHelper')}
             fullWidth
             size="small"
-            helperText="The path to the JSON property (dot notation for nested)"
+            helperText={t('keyPathHelper')}
           />
 
           <TextField
-            label="Display Label"
+            label={t('label')}
             value={label}
             onChange={(e) => setLabel(e.target.value)}
-            placeholder="e.g., Version Number"
+            placeholder={t('labelHelper')}
             fullWidth
             size="small"
           />
 
           <FormControl fullWidth size="small">
-            <InputLabel>Field Type</InputLabel>
+            <InputLabel>{t('fieldType')}</InputLabel>
             <Select
               value={type}
               onChange={(e) => setType(e.target.value as FieldType)}
-              label="Field Type"
+              label={t('fieldType')}
             >
-              <MenuItem value="text">Text</MenuItem>
-              <MenuItem value="number">Number</MenuItem>
-              <MenuItem value="boolean">Boolean (Switch)</MenuItem>
-              <MenuItem value="select">Select (Dropdown)</MenuItem>
+              <MenuItem value="text">{t('typeText')}</MenuItem>
+              <MenuItem value="number">{t('typeNumber')}</MenuItem>
+              <MenuItem value="boolean">{t('typeBoolean')}</MenuItem>
+              <MenuItem value="select">{t('typeSelect')}</MenuItem>
             </Select>
           </FormControl>
 
           {type === 'select' && (
             <Box>
               <Typography variant="body2" sx={{ mb: 1, color: '#64748b' }}>
-                Select Options
+                {t('selectOptions')}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
                 <TextField
                   size="small"
                   value={newOption}
                   onChange={(e) => setNewOption(e.target.value)}
-                  placeholder="Add option..."
+                  placeholder={t('selectOptionsHelper')}
                   fullWidth
                   onKeyPress={(e) => e.key === 'Enter' && handleAddOption()}
                 />
@@ -175,16 +177,6 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
               </Box>
             </Box>
           )}
-
-          <TextField
-            label="Default Value (Optional)"
-            value={defaultValue}
-            onChange={(e) => setDefaultValue(e.target.value)}
-            placeholder={type === 'boolean' ? 'true or false' : ''}
-            fullWidth
-            size="small"
-            helperText="Used when the field doesn't exist in the file"
-          />
         </Box>
       </DialogContent>
 
@@ -193,7 +185,7 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
           onClick={onClose}
           sx={{ textTransform: 'none', color: '#64748b' }}
         >
-          Cancel
+          {t('cancel')}
         </Button>
         <Button
           variant="contained"
@@ -205,7 +197,7 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
             '&:hover': { backgroundColor: '#1d4ed8' }
           }}
         >
-          {editField ? 'Save Changes' : 'Add Field'}
+          {editField ? t('update') : t('add')}
         </Button>
       </DialogActions>
     </Dialog>

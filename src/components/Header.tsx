@@ -1,6 +1,7 @@
-import { AppBar, Toolbar, Typography, IconButton, Tooltip, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Tooltip, Box, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CodeIcon from '@mui/icons-material/Code';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface HeaderProps {
   onSettingsClick: () => void;
@@ -8,6 +9,8 @@ interface HeaderProps {
 }
 
 export function Header({ onSettingsClick, showSettings }: HeaderProps) {
+  const { language, setLanguage, t } = useLanguage();
+
   return (
     <AppBar 
       position="static" 
@@ -44,7 +47,7 @@ export function Header({ onSettingsClick, showSettings }: HeaderProps) {
                 lineHeight: 1.2
               }}
             >
-              Package.json Editor
+              {t('appTitle')}
             </Typography>
             <Typography 
               variant="caption" 
@@ -53,14 +56,41 @@ export function Header({ onSettingsClick, showSettings }: HeaderProps) {
                 fontSize: '0.75rem'
               }}
             >
-              GUI Configuration Tool
+              {t('appSubtitle')}
             </Typography>
           </Box>
         </Box>
         
         <Box sx={{ flexGrow: 1 }} />
+
+        <ToggleButtonGroup
+          value={language}
+          exclusive
+          onChange={(_, newLang) => newLang && setLanguage(newLang)}
+          size="small"
+          sx={{ 
+            mr: 2,
+            '& .MuiToggleButton-root': {
+              px: 1.5,
+              py: 0.5,
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              border: '1px solid #e2e8f0',
+              '&.Mui-selected': {
+                backgroundColor: '#2563eb',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: '#1d4ed8'
+                }
+              }
+            }
+          }}
+        >
+          <ToggleButton value="ja">日本語</ToggleButton>
+          <ToggleButton value="en">EN</ToggleButton>
+        </ToggleButtonGroup>
         
-        <Tooltip title={showSettings ? "Back to Editor" : "Preset Settings"}>
+        <Tooltip title={showSettings ? t('backToEditor') : t('presetSettings')}>
           <IconButton 
             onClick={onSettingsClick}
             sx={{ 

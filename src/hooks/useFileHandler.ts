@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { FileData } from '@/types';
+import type { FileData } from '@/types';
 import JSZip from 'jszip';
 import { get, set, cloneDeep } from 'lodash-es';
 

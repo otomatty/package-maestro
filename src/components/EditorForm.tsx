@@ -21,6 +21,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import FolderZipIcon from '@mui/icons-material/FolderZip';
 import { PresetField } from '@/types';
+import { useLanguage } from '@/i18n/LanguageContext';
 
 interface EditorFormProps {
   fileName: string;
@@ -44,6 +45,7 @@ export function EditorForm({
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const { t } = useLanguage();
 
   const handleSave = async () => {
     try {
@@ -52,7 +54,7 @@ export function EditorForm({
       await onSave();
       setShowSuccess(true);
     } catch (error) {
-      setSaveError((error as Error).message || 'Failed to save file');
+      setSaveError((error as Error).message || t('saveError'));
     } finally {
       setIsSaving(false);
     }
@@ -205,12 +207,12 @@ export function EditorForm({
                 {fileName}
               </Typography>
               <Typography variant="caption" sx={{ color: '#64748b' }}>
-                {isZip ? 'ZIP Archive' : 'JSON File'}
+                {isZip ? t('zipFile') : 'JSON'}
               </Typography>
             </Box>
           </Box>
           <Chip
-            label={isZip ? 'package.json inside ZIP' : 'Direct Edit'}
+            label={isZip ? 'package.json' : t('editingFile')}
             size="small"
             sx={{
               backgroundColor: isZip ? 'rgba(139, 92, 246, 0.1)' : 'rgba(245, 158, 11, 0.1)',
@@ -224,7 +226,7 @@ export function EditorForm({
         <Box sx={{ p: 3 }}>
           {fields.length === 0 ? (
             <Alert severity="info" sx={{ mb: 2 }}>
-              No fields configured. Go to Settings to add editable fields.
+              {t('noFieldsDefined')} {t('goToSettings')}
             </Alert>
           ) : (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
@@ -275,7 +277,7 @@ export function EditorForm({
               }
             }}
           >
-            Close File
+            {t('closeFile')}
           </Button>
           <Button
             variant="contained"
@@ -296,7 +298,7 @@ export function EditorForm({
               }
             }}
           >
-            {isSaving ? 'Saving...' : 'Save Changes'}
+            {isSaving ? t('loading') : t('save')}
           </Button>
         </Box>
       </Paper>
@@ -313,7 +315,7 @@ export function EditorForm({
           severity="success"
           sx={{ width: '100%' }}
         >
-          File saved successfully!
+          {t('saveSuccess')}
         </Alert>
       </Snackbar>
 
