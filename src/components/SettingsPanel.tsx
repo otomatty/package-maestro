@@ -24,6 +24,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   DndContext,
   closestCenter,
@@ -42,6 +43,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { PresetField, AppConfig } from '@/types';
 import { FieldDialog } from './FieldDialog';
+import { PreviewDialog } from './PreviewDialog';
 import { useLanguage } from '@/i18n/LanguageContext';
 
 interface SettingsPanelProps {
@@ -173,6 +175,7 @@ export function SettingsPanel({
   onReset
 }: SettingsPanelProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [editingField, setEditingField] = useState<PresetField | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -306,6 +309,21 @@ export function SettingsPanel({
             {t('addField')}
           </Button>
 
+          <Button
+            variant="outlined"
+            startIcon={<VisibilityIcon />}
+            onClick={() => setPreviewOpen(true)}
+            disabled={config.fields.length === 0}
+            sx={{
+              textTransform: 'none',
+              borderColor: '#e2e8f0',
+              color: '#64748b',
+              '&:hover': { borderColor: '#cbd5e1', backgroundColor: '#f8fafc' }
+            }}
+          >
+            {t('preview')}
+          </Button>
+
           <Divider orientation="vertical" flexItem />
 
           <Button
@@ -423,6 +441,12 @@ export function SettingsPanel({
         onClose={() => setDialogOpen(false)}
         onSave={handleDialogSave}
         editField={editingField}
+      />
+
+      <PreviewDialog
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        fields={config.fields}
       />
     </Box>
   );

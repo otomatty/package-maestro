@@ -45,6 +45,12 @@ export const translations = {
     confirmReset: '設定をデフォルトに戻しますか？',
     importSuccess: '設定をインポートしました',
     importError: '設定のインポートに失敗しました',
+    preview: 'プレビュー',
+    previewTitle: 'package.json プレビュー',
+    previewDescription: '現在のプリセット設定に基づくpackage.jsonの構造',
+    close: '閉じる',
+    copyToClipboard: 'コピー',
+    copied: 'コピーしました！',
 
     // FieldDialog
     addFieldTitle: 'フィールドを追加',
@@ -115,6 +121,12 @@ export const translations = {
     confirmReset: 'Reset settings to default?',
     importSuccess: 'Settings imported successfully',
     importError: 'Failed to import settings',
+    preview: 'Preview',
+    previewTitle: 'package.json Preview',
+    previewDescription: 'Structure based on current preset configuration',
+    close: 'Close',
+    copyToClipboard: 'Copy',
+    copied: 'Copied!',
 
     // FieldDialog
     addFieldTitle: 'Add Field',
