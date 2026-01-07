@@ -1,13 +1,127 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { Box, Alert, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { Header } from '@/components/Header';
+import { DropZone } from '@/components/DropZone';
+import { EditorForm } from '@/components/EditorForm';
+import { SettingsPanel } from '@/components/SettingsPanel';
+import { BrowserWarning } from '@/components/BrowserWarning';
+import { usePresets } from '@/hooks/usePresets';
+import { useFileHandler } from '@/hooks/useFileHandler';
+
+const theme = createTheme({
+  typography: {
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+  palette: {
+    primary: {
+      main: '#2563eb',
+      dark: '#1d4ed8',
+    },
+    background: {
+      default: '#f8fafc',
+    },
+  },
+  shape: {
+    borderRadius: 8,
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          fontWeight: 600,
+        },
+      },
+    },
+  },
+});
 
 const Index = () => {
+  const [showSettings, setShowSettings] = useState(false);
+  const {
+    config,
+    isLoaded,
+    addField,
+    updateField,
+    deleteField,
+    updatePresetName,
+    exportConfig,
+    importConfig,
+    resetToDefault
+  } = usePresets();
+
+  const {
+    fileData,
+    isLoading,
+    error,
+    openFile,
+    handleDrop,
+    updateValue,
+    getValue,
+    saveFile,
+    closeFile,
+    setError
+  } = useFileHandler();
+
+  if (!isLoaded) {
+    return null;
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+        <Header 
+          onSettingsClick={() => setShowSettings(!showSettings)} 
+          showSettings={showSettings}
+        />
+
+        <BrowserWarning />
+
+        {error && (
+          <Box sx={{ p: 2, maxWidth: 700, mx: 'auto' }}>
+            <Alert 
+              severity="error" 
+              onClose={() => setError(null)}
+              sx={{ borderRadius: 2 }}
+            >
+              {error}
+            </Alert>
+          </Box>
+        )}
+
+        <Box sx={{ py: 3 }}>
+          {showSettings ? (
+            <SettingsPanel
+              config={config}
+              onAddField={addField}
+              onUpdateField={updateField}
+              onDeleteField={deleteField}
+              onUpdatePresetName={updatePresetName}
+              onExport={exportConfig}
+              onImport={importConfig}
+              onReset={resetToDefault}
+            />
+          ) : fileData ? (
+            <EditorForm
+              fileName={fileData.name}
+              isZip={fileData.isZip}
+              fields={config.fields}
+              getValue={getValue}
+              updateValue={updateValue}
+              onSave={saveFile}
+              onClose={closeFile}
+            />
+          ) : (
+            <DropZone
+              onDrop={handleDrop}
+              onOpenFile={openFile}
+              isLoading={isLoading}
+            />
+          )}
+        </Box>
+      </Box>
+    </ThemeProvider>
   );
 };
 
