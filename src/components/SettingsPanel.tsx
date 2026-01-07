@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import {
-  Box,
   Paper,
   Typography,
   Button,
@@ -105,33 +104,21 @@ function SortableRow({ field, onEdit, onDelete, getTypeColor, getTypeLabel, t }:
 
   return (
     <TableRow ref={setNodeRef} style={style} hover>
-      <TableCell sx={{ width: 48, p: 1 }}>
+      <TableCell className="w-12 p-1">
         <IconButton
           {...attributes}
           {...listeners}
           size="small"
-          sx={{ 
-            cursor: 'grab',
-            color: '#94a3b8',
-            '&:hover': { color: '#64748b' },
-            '&:active': { cursor: 'grabbing' }
-          }}
+          className="cursor-grab text-slate-400 hover:text-slate-500 active:cursor-grabbing"
         >
           <DragIndicatorIcon fontSize="small" />
         </IconButton>
       </TableCell>
-      <TableCell sx={{ fontWeight: 500 }}>{field.label}</TableCell>
+      <TableCell className="font-medium">{field.label}</TableCell>
       <TableCell>
         <Typography
           component="code"
-          sx={{
-            fontFamily: 'monospace',
-            fontSize: '0.85rem',
-            backgroundColor: '#f1f5f9',
-            px: 1,
-            py: 0.5,
-            borderRadius: 1
-          }}
+          className="font-mono text-sm bg-slate-50 px-1 py-0.5 rounded"
         >
           {field.keyPath}
         </Typography>
@@ -140,20 +127,17 @@ function SortableRow({ field, onEdit, onDelete, getTypeColor, getTypeLabel, t }:
         <Chip
           label={getTypeLabel(field.type)}
           size="small"
-          sx={{
-            backgroundColor: typeColors.bg,
-            color: typeColors.color,
-            fontWeight: 500
-          }}
+          className="font-medium"
+          style={{ backgroundColor: typeColors.bg, color: typeColors.color }}
         />
       </TableCell>
       <TableCell>
         {field.selectOptions?.length ? (
-          <Typography variant="body2" sx={{ color: '#64748b' }}>
+          <Typography variant="body2" className="text-slate-500">
             {field.selectOptions.join(', ')}
           </Typography>
         ) : (
-          <Typography variant="body2" sx={{ color: '#cbd5e1' }}>—</Typography>
+          <Typography variant="body2" className="text-slate-300">—</Typography>
         )}
       </TableCell>
       <TableCell align="right">
@@ -161,7 +145,7 @@ function SortableRow({ field, onEdit, onDelete, getTypeColor, getTypeLabel, t }:
           <IconButton
             size="small"
             onClick={() => onEdit(field)}
-            sx={{ color: '#64748b' }}
+            className="text-slate-500"
           >
             <EditIcon fontSize="small" />
           </IconButton>
@@ -170,7 +154,7 @@ function SortableRow({ field, onEdit, onDelete, getTypeColor, getTypeLabel, t }:
           <IconButton
             size="small"
             onClick={() => onDelete(field.id)}
-            sx={{ color: '#ef4444' }}
+            className="text-red-500"
           >
             <DeleteIcon fontSize="small" />
           </IconButton>
@@ -203,9 +187,9 @@ export function SettingsPanel({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [sampleImportOpen, setSampleImportOpen] = useState(false);
-  const [editingField, setEditingField] = useState<PresetField | null>(null);
-  const [importError, setImportError] = useState<string | null>(null);
-  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [editingField, setEditingField] = useState<PresetField | undefined>(undefined);
+  const [importError, setImportError] = useState<string | undefined>(undefined);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useLanguage();
 
@@ -228,7 +212,7 @@ export function SettingsPanel({
   };
 
   const handleAddClick = () => {
-    setEditingField(null);
+    setEditingField(undefined);
     setDialogOpen(true);
   };
 
@@ -254,7 +238,7 @@ export function SettingsPanel({
     if (file) {
       try {
         await onImport(file);
-        setImportError(null);
+        setImportError(undefined);
       } catch (error) {
         setImportError((error as Error).message || t('importError'));
       }
@@ -300,24 +284,14 @@ export function SettingsPanel({
   };
 
   return (
-    <Box sx={{ maxWidth: 900, mx: 'auto', p: 3 }} className="animate-fade-in">
+    <div className="max-w-[900px] mx-auto p-3 animate-fade-in">
       <Paper
         elevation={0}
-        sx={{
-          border: '1px solid #e2e8f0',
-          borderRadius: 2,
-          overflow: 'hidden'
-        }}
+        className="border border-slate-200 rounded-lg overflow-hidden"
       >
         {/* Header */}
-        <Box
-          sx={{
-            p: 2.5,
-            backgroundColor: '#f8fafc',
-            borderBottom: '1px solid #e2e8f0'
-          }}
-        >
-          <Typography variant="h6" sx={{ fontWeight: 600, color: '#1e293b', mb: 2 }}>
+        <div className="p-2.5 bg-slate-50 border-b border-slate-200">
+          <Typography variant="h6" className="font-semibold text-slate-800 mb-2">
             {t('settingsTitle')}
           </Typography>
           
@@ -338,32 +312,18 @@ export function SettingsPanel({
             label={t('presetName')}
             value={config.presetName}
             onChange={(e) => onUpdatePresetName(e.target.value)}
-            sx={{ width: 300 }}
+            className="w-[300px]"
           />
-        </Box>
+        </div>
 
         {/* Actions Bar */}
-        <Box
-          sx={{
-            p: 2,
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 1.5,
-            borderBottom: '1px solid #e2e8f0',
-            alignItems: 'center'
-          }}
-        >
+        <div className="p-2 flex flex-wrap gap-1.5 border-b border-slate-200 items-center">
           {/* Primary Actions */}
           <Button
             variant="contained"
             startIcon={<AddIcon />}
             onClick={handleAddClick}
-            sx={{
-              backgroundColor: '#2563eb',
-              textTransform: 'none',
-              fontWeight: 600,
-              '&:hover': { backgroundColor: '#1d4ed8' }
-            }}
+            className="bg-blue-600 normal-case font-semibold hover:bg-blue-700"
           >
             {t('addField')}
           </Button>
@@ -373,29 +333,19 @@ export function SettingsPanel({
             startIcon={<VisibilityIcon />}
             onClick={() => setPreviewOpen(true)}
             disabled={config.fields.length === 0}
-            sx={{
-              textTransform: 'none',
-              borderColor: '#e2e8f0',
-              color: '#64748b',
-              '&:hover': { borderColor: '#cbd5e1', backgroundColor: '#f8fafc' }
-            }}
+            className="normal-case border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50"
           >
             {t('preview')}
           </Button>
 
-          <Box sx={{ flexGrow: 1 }} />
+          <div className="flex-grow" />
 
           {/* More Actions Menu */}
           <Button
             variant="outlined"
             startIcon={<MoreVertIcon />}
             onClick={handleMenuOpen}
-            sx={{
-              textTransform: 'none',
-              borderColor: '#e2e8f0',
-              color: '#64748b',
-              '&:hover': { borderColor: '#cbd5e1', backgroundColor: '#f8fafc' }
-            }}
+            className="normal-case border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50"
           >
             {t('moreActions')}
           </Button>
@@ -434,15 +384,10 @@ export function SettingsPanel({
             <Divider />
             <MenuItem 
               onClick={() => handleMenuAction(() => onReset())}
-              sx={{
-                color: '#dc2626',
-                '&:hover': {
-                  backgroundColor: '#fef2f2'
-                }
-              }}
+              className="text-red-600 hover:bg-red-50"
             >
               <ListItemIcon>
-                <RestartAltIcon fontSize="small" sx={{ color: '#dc2626' }} />
+                <RestartAltIcon fontSize="small" className="text-red-600" />
               </ListItemIcon>
               <ListItemText>{t('resetDefault')}</ListItemText>
             </MenuItem>
@@ -455,10 +400,10 @@ export function SettingsPanel({
             accept=".json"
             style={{ display: 'none' }}
           />
-        </Box>
+        </div>
 
         {importError && (
-          <Alert severity="error" onClose={() => setImportError(null)} sx={{ m: 2 }}>
+          <Alert severity="error" onClose={() => setImportError(undefined)} className="m-2">
             {importError}
           </Alert>
         )}
@@ -467,19 +412,19 @@ export function SettingsPanel({
         <TableContainer>
           <Table>
             <TableHead>
-              <TableRow sx={{ backgroundColor: '#fafafa' }}>
-                <TableCell sx={{ width: 48, p: 1 }} />
-                <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>{t('label')}</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>{t('keyPath')}</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>{t('type')}</TableCell>
-                <TableCell sx={{ fontWeight: 600, color: '#64748b' }}>{t('selectOptions')}</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 600, color: '#64748b' }}>{t('actions')}</TableCell>
+              <TableRow className="bg-gray-50">
+                <TableCell className="w-12 p-1" />
+                <TableCell className="font-semibold text-slate-500">{t('label')}</TableCell>
+                <TableCell className="font-semibold text-slate-500">{t('keyPath')}</TableCell>
+                <TableCell className="font-semibold text-slate-500">{t('type')}</TableCell>
+                <TableCell className="font-semibold text-slate-500">{t('selectOptions')}</TableCell>
+                <TableCell align="right" className="font-semibold text-slate-500">{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {config.fields.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4, color: '#94a3b8' }}>
+                  <TableCell colSpan={6} className="text-center py-4 text-slate-400">
                     {t('noFields')}
                   </TableCell>
                 </TableRow>
@@ -530,6 +475,6 @@ export function SettingsPanel({
         onClose={() => setSampleImportOpen(false)}
         onImport={handleSampleImport}
       />
-    </Box>
+    </div>
   );
 }

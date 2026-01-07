@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Box,
   Typography,
   IconButton,
   Snackbar,
@@ -73,87 +72,43 @@ export function PreviewDialog({ open, onClose, fields }: PreviewDialogProps) {
         maxWidth="md"
         fullWidth
         PaperProps={{
-          sx: {
-            borderRadius: 2,
-            maxHeight: '80vh'
-          }
+          className: 'rounded-lg max-h-[80vh]'
         }}
       >
-        <DialogTitle
-          sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px solid #e2e8f0',
-            pb: 2
-          }}
-        >
-          <Box>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+        <DialogTitle className="flex justify-between items-center border-b border-slate-200 pb-2">
+          <div>
+            <Typography variant="h6" className="font-semibold">
               {t('previewTitle')}
             </Typography>
-            <Typography variant="caption" sx={{ color: '#64748b' }}>
+            <Typography variant="caption" className="text-slate-500">
               {t('previewDescription')}
             </Typography>
-          </Box>
+          </div>
           <IconButton onClick={onClose} size="small">
             <CloseIcon />
           </IconButton>
         </DialogTitle>
 
-        <DialogContent sx={{ p: 0, pt: 2.5 }}>
-          <Box
-            sx={{
-              position: 'relative',
-              backgroundColor: '#1e293b',
-              p: 3,
-              minHeight: 200
-            }}
-          >
+        <DialogContent className="p-0 pt-2.5">
+          <div className="relative bg-slate-800 p-3 min-h-[200px]">
             <IconButton
               onClick={handleCopy}
               size="small"
-              sx={{
-                position: 'absolute',
-                top: 12,
-                right: 12,
-                color: '#94a3b8',
-                backgroundColor: 'rgba(255,255,255,0.1)',
-                '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  color: 'white'
-                }
-              }}
+              className="absolute top-3 right-3 text-slate-400 bg-white/10 hover:bg-white/20 hover:text-white"
             >
               <ContentCopyIcon fontSize="small" />
             </IconButton>
-            <Box
-              component="pre"
-              sx={{
-                fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-                fontSize: '0.875rem',
-                lineHeight: 1.6,
-                color: '#e2e8f0',
-                margin: 0,
-                overflow: 'auto',
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word'
-              }}
-            >
+            <pre className="font-mono text-sm leading-relaxed text-slate-200 m-0 overflow-auto whitespace-pre-wrap break-words">
               <code>{previewJson}</code>
-            </Box>
-          </Box>
+            </pre>
+          </div>
         </DialogContent>
 
-        <DialogActions sx={{ p: 2, borderTop: '1px solid #e2e8f0' }}>
+        <DialogActions className="p-2 border-t border-slate-200">
           <Button
             onClick={onClose}
             variant="outlined"
-            sx={{
-              textTransform: 'none',
-              borderColor: '#e2e8f0',
-              color: '#64748b'
-            }}
+            className="normal-case border-slate-200 text-slate-500"
           >
             {t('close')}
           </Button>
@@ -161,11 +116,7 @@ export function PreviewDialog({ open, onClose, fields }: PreviewDialogProps) {
             onClick={handleCopy}
             variant="contained"
             startIcon={<ContentCopyIcon />}
-            sx={{
-              backgroundColor: '#2563eb',
-              textTransform: 'none',
-              '&:hover': { backgroundColor: '#1d4ed8' }
-            }}
+            className="bg-blue-600 normal-case hover:bg-blue-700"
           >
             {t('copyToClipboard')}
           </Button>
@@ -178,7 +129,7 @@ export function PreviewDialog({ open, onClose, fields }: PreviewDialogProps) {
         onClose={() => setShowCopied(false)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert severity="success" sx={{ width: '100%' }}>
+        <Alert severity="success" className="w-full">
           {t('copied')}
         </Alert>
       </Snackbar>

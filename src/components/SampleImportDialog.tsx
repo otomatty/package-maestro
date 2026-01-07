@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Box,
   Typography,
   Checkbox,
   FormControlLabel,
@@ -100,14 +99,14 @@ function NodeItem({ node, depth, selectedKeys, onToggle }: NodeItemProps) {
   const isSelected = selectedKeys.has(node.keyPath);
 
   return (
-    <Box sx={{ ml: depth * 2 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', py: 0.5 }}>
+    <div style={{ marginLeft: `${depth * 8}px` }}>
+      <div className="flex items-center py-0.5">
         {hasChildren && (
           <IconButton size="small" onClick={() => setExpanded(!expanded)}>
             {expanded ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
           </IconButton>
         )}
-        {!hasChildren && <Box sx={{ width: 28 }} />}
+        {!hasChildren && <div className="w-7" />}
         
         <FormControlLabel
           control={
@@ -119,8 +118,8 @@ function NodeItem({ node, depth, selectedKeys, onToggle }: NodeItemProps) {
             />
           }
           label={
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography variant="body2" component="span" sx={{ fontFamily: 'monospace' }}>
+            <div className="flex items-center gap-1">
+              <Typography variant="body2" component="span" className="font-mono">
                 {node.key}
               </Typography>
               {!hasChildren && (
@@ -129,14 +128,14 @@ function NodeItem({ node, depth, selectedKeys, onToggle }: NodeItemProps) {
                   size="small"
                   color={getTypeColor(node.type)}
                   variant="outlined"
-                  sx={{ height: 20, fontSize: '0.7rem' }}
+                  className="h-5 text-xs"
                 />
               )}
-            </Box>
+            </div>
           }
-          sx={{ m: 0 }}
+          className="m-0"
         />
-      </Box>
+      </div>
       
       {hasChildren && (
         <Collapse in={expanded}>
@@ -151,15 +150,15 @@ function NodeItem({ node, depth, selectedKeys, onToggle }: NodeItemProps) {
           ))}
         </Collapse>
       )}
-    </Box>
+    </div>
   );
 }
 
 export function SampleImportDialog({ open, onClose, onImport }: SampleImportDialogProps) {
   const { t } = useLanguage();
-  const [jsonData, setJsonData] = useState<Record<string, unknown> | null>(null);
+  const [jsonData, setJsonData] = useState<Record<string, unknown> | undefined>(undefined);
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const nodes = useMemo(() => {
     if (!jsonData) return [];
@@ -181,14 +180,14 @@ export function SampleImportDialog({ open, onClose, onImport }: SampleImportDial
           const parsed = JSON.parse(text);
           setJsonData(parsed);
           setSelectedKeys(new Set());
-          setError(null);
-        } catch (err) {
+          setError(undefined);
+        } catch {
           setError(t('invalidJsonFormat'));
         }
       };
       
       input.click();
-    } catch (err) {
+    } catch {
       setError(t('fileReadError'));
     }
   }, [t]);
@@ -204,6 +203,13 @@ export function SampleImportDialog({ open, onClose, onImport }: SampleImportDial
       return next;
     });
   }, []);
+
+  const handleClose = useCallback(() => {
+    setJsonData(undefined);
+    setSelectedKeys(new Set());
+    setError(undefined);
+    onClose();
+  }, [onClose]);
 
   const handleImport = useCallback(() => {
     if (!jsonData || selectedKeys.size === 0) return;
@@ -239,21 +245,14 @@ export function SampleImportDialog({ open, onClose, onImport }: SampleImportDial
 
     onImport(fields);
     handleClose();
-  }, [jsonData, selectedKeys, nodes, onImport]);
-
-  const handleClose = () => {
-    setJsonData(null);
-    setSelectedKeys(new Set());
-    setError(null);
-    onClose();
-  };
+  }, [jsonData, selectedKeys, nodes, onImport, handleClose]);
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>{t('sampleImportTitle')}</DialogTitle>
-      <DialogContent sx={{ pt: 2.5 }}>
+      <DialogContent className="pt-2.5">
         {!jsonData ? (
-          <Box sx={{ py: 4, textAlign: 'center' }}>
+          <div className="py-4 text-center">
             <Button
               variant="outlined"
               size="large"
@@ -262,24 +261,17 @@ export function SampleImportDialog({ open, onClose, onImport }: SampleImportDial
             >
               {t('selectSampleFile')}
             </Button>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            <Typography variant="body2" color="text.secondary" className="mt-2">
               package.json を選択してください
             </Typography>
-          </Box>
+          </div>
         ) : (
-          <Box>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          <div>
+            <Typography variant="body2" color="text.secondary" className="mb-2">
               {t('selectKeysToImport')}
             </Typography>
             
-            <Box sx={{ 
-              maxHeight: 400, 
-              overflow: 'auto', 
-              border: '1px solid',
-              borderColor: 'divider',
-              borderRadius: 1,
-              p: 1
-            }}>
+            <div className="max-h-[400px] overflow-auto border border-slate-200 rounded p-1">
               {nodes.map((node) => (
                 <NodeItem
                   key={node.keyPath}
@@ -289,16 +281,16 @@ export function SampleImportDialog({ open, onClose, onImport }: SampleImportDial
                   onToggle={toggleKey}
                 />
               ))}
-            </Box>
+            </div>
 
-            <Typography variant="body2" sx={{ mt: 2 }}>
+            <Typography variant="body2" className="mt-2">
               {t('selectedCount')}: {selectedKeys.size}
             </Typography>
-          </Box>
+          </div>
         )}
 
         {error && (
-          <Alert severity="error" sx={{ mt: 2 }}>
+          <Alert severity="error" className="mt-2">
             {error}
           </Alert>
         )}

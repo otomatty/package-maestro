@@ -4,9 +4,9 @@ import JSZip from 'jszip';
 import { get, set, cloneDeep } from 'lodash-es';
 
 export function useFileHandler() {
-  const [fileData, setFileData] = useState<FileData | null>(null);
+  const [fileData, setFileData] = useState<FileData | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const readJsonFile = async (file: File, handle: FileSystemFileHandle | null): Promise<FileData> => {
     const text = await file.text();
@@ -24,8 +24,8 @@ export function useFileHandler() {
     const zipContent = await zip.loadAsync(file);
     
     // Find package.json in root or first level
-    let packageJsonPath: string | null = null;
-    let packageJsonContent: Record<string, unknown> | null = null;
+    let packageJsonPath: string | undefined = undefined;
+    let packageJsonContent: Record<string, unknown> | undefined = undefined;
 
     // Check root first
     if (zipContent.files['package.json']) {
@@ -60,7 +60,7 @@ export function useFileHandler() {
   };
 
   const openFile = useCallback(async () => {
-    setError(null);
+    setError(undefined);
     
     // Check for File System Access API support
     if (!('showOpenFilePicker' in window)) {
@@ -103,7 +103,7 @@ export function useFileHandler() {
 
   const handleDrop = useCallback(async (e: React.DragEvent) => {
     e.preventDefault();
-    setError(null);
+    setError(undefined);
 
     const items = e.dataTransfer.items;
     if (!items || items.length === 0) return;
@@ -149,7 +149,7 @@ export function useFileHandler() {
 
     const newContent = cloneDeep(fileData.content);
     set(newContent, keyPath, value);
-    setFileData(prev => prev ? { ...prev, content: newContent } : null);
+    setFileData(prev => prev ? { ...prev, content: newContent } : undefined);
   }, [fileData]);
 
   const getValue = useCallback((keyPath: string) => {
@@ -209,8 +209,8 @@ export function useFileHandler() {
   }, [fileData]);
 
   const closeFile = useCallback(() => {
-    setFileData(null);
-    setError(null);
+    setFileData(undefined);
+    setError(undefined);
   }, []);
 
   return {

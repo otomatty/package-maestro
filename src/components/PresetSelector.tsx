@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  Box,
   FormControl,
   InputLabel,
   Select,
@@ -47,7 +46,7 @@ export function PresetSelector({
   onDeletePreset
 }: PresetSelectorProps) {
   const { t } = useLanguage();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | undefined>(undefined);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [newPresetName, setNewPresetName] = useState('');
@@ -59,7 +58,7 @@ export function PresetSelector({
   };
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
+    setAnchorEl(undefined);
   };
 
   const handleCreate = () => {
@@ -77,14 +76,8 @@ export function PresetSelector({
 
   return (
     <>
-      <Box sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 1.5, 
-        flexWrap: 'wrap',
-        mb: 2 
-      }}>
-        <FormControl size="small" sx={{ minWidth: 200 }}>
+      <div className="flex items-center gap-1.5 flex-wrap mb-2">
+        <FormControl size="small" className="min-w-[200px]">
           <InputLabel id="preset-select-label">{t('selectPreset')}</InputLabel>
           <Select
             labelId="preset-select-label"
@@ -143,7 +136,7 @@ export function PresetSelector({
               setDeleteDialogOpen(true);
             }}
             disabled={!canDeletePreset}
-            sx={{ color: 'error.main' }}
+            className="text-red-600"
           >
             <ListItemIcon>
               <DeleteIcon fontSize="small" color="error" />
@@ -158,12 +151,12 @@ export function PresetSelector({
           color={presets.length >= MAX_PRESETS ? 'warning' : 'default'}
           variant="outlined"
         />
-      </Box>
+      </div>
 
       {/* Create Preset Dialog */}
       <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)}>
         <DialogTitle>{t('createPreset')}</DialogTitle>
-        <DialogContent sx={{ pt: 2.5 }}>
+        <DialogContent className="pt-2.5">
           <TextField
             autoFocus
             margin="dense"
@@ -188,7 +181,7 @@ export function PresetSelector({
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
         <DialogTitle>{t('deletePreset')}</DialogTitle>
-        <DialogContent sx={{ pt: 2.5 }}>
+        <DialogContent className="pt-2.5">
           <Typography>
             {t('confirmDeletePreset')}
           </Typography>

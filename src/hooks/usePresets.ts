@@ -52,7 +52,7 @@ const createDefaultStore = (): PresetStore => {
 };
 
 // Migration from old format (single AppConfig) to new format (PresetStore)
-const migrateFromOldFormat = (data: unknown): PresetStore | null => {
+const migrateFromOldFormat = (data: unknown): PresetStore | undefined => {
   if (
     data &&
     typeof data === 'object' &&
@@ -71,7 +71,7 @@ const migrateFromOldFormat = (data: unknown): PresetStore | null => {
       }]
     };
   }
-  return null;
+  return undefined;
 };
 
 export function usePresets() {
@@ -141,10 +141,10 @@ export function usePresets() {
   }, [canCreatePreset]);
 
   const duplicatePreset = useCallback((id: string) => {
-    if (!canCreatePreset) return null;
+    if (!canCreatePreset) return undefined;
     
     const preset = store.presets.find(p => p.id === id);
-    if (!preset) return null;
+    if (!preset) return undefined;
     
     const newPreset: AppConfig = {
       id: uuidv4(),

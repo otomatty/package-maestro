@@ -10,7 +10,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Box,
   Typography,
   Chip,
   IconButton
@@ -24,7 +23,7 @@ interface FieldDialogProps {
   open: boolean;
   onClose: () => void;
   onSave: (field: Omit<PresetField, 'id'>) => void;
-  editField?: PresetField | null;
+  editField?: PresetField | undefined;
 }
 
 export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogProps) {
@@ -85,13 +84,8 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
       maxWidth="sm"
       fullWidth
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        borderBottom: '1px solid #e2e8f0',
-      }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+      <DialogTitle className="flex justify-between items-center border-b border-slate-200">
+        <Typography variant="h6" className="font-semibold">
           {editField ? t('editFieldTitle') : t('addFieldTitle')}
         </Typography>
         <IconButton onClick={onClose} size="small">
@@ -99,8 +93,8 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ pt: 2.5 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+      <DialogContent className="pt-2.5">
+        <div className="flex flex-col gap-2.5">
           <TextField
             label={t('keyPath')}
             value={keyPath}
@@ -135,11 +129,11 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
           </FormControl>
 
           {type === 'select' && (
-            <Box>
-              <Typography variant="body2" sx={{ mb: 1, color: '#64748b' }}>
+            <div>
+              <Typography variant="body2" className="mb-1 text-slate-500">
                 {t('selectOptions')}
               </Typography>
-              <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+              <div className="flex gap-1 mb-1">
                 <TextField
                   size="small"
                   value={newOption}
@@ -150,16 +144,12 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
                 />
                 <IconButton 
                   onClick={handleAddOption}
-                  sx={{ 
-                    backgroundColor: '#2563eb',
-                    color: 'white',
-                    '&:hover': { backgroundColor: '#1d4ed8' }
-                  }}
+                  className="bg-blue-600 text-white hover:bg-blue-700"
                 >
                   <AddIcon />
                 </IconButton>
-              </Box>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              </div>
+              <div className="flex flex-wrap gap-0.5">
                 {selectOptions.map((option) => (
                   <Chip
                     key={option}
@@ -168,16 +158,16 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
                     size="small"
                   />
                 ))}
-              </Box>
-            </Box>
+              </div>
+            </div>
           )}
-        </Box>
+        </div>
       </DialogContent>
 
-      <DialogActions sx={{ p: 2.5, borderTop: '1px solid #e2e8f0' }}>
+      <DialogActions className="p-2.5 border-t border-slate-200">
         <Button 
           onClick={onClose}
-          sx={{ textTransform: 'none', color: '#64748b' }}
+          className="normal-case text-slate-500"
         >
           {t('cancel')}
         </Button>
@@ -185,11 +175,7 @@ export function FieldDialog({ open, onClose, onSave, editField }: FieldDialogPro
           variant="contained"
           onClick={handleSave}
           disabled={!keyPath.trim() || !label.trim()}
-          sx={{
-            backgroundColor: '#2563eb',
-            textTransform: 'none',
-            '&:hover': { backgroundColor: '#1d4ed8' }
-          }}
+          className="bg-blue-600 normal-case hover:bg-blue-700"
         >
           {editField ? t('update') : t('add')}
         </Button>

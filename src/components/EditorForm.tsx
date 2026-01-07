@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  Box,
   Paper,
   Typography,
   TextField,
@@ -44,13 +43,13 @@ export function EditorForm({
 }: EditorFormProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | undefined>(undefined);
   const { t } = useLanguage();
 
   const handleSave = async () => {
     try {
       setIsSaving(true);
-      setSaveError(null);
+      setSaveError(undefined);
       await onSave();
       setShowSuccess(true);
     } catch (error) {
@@ -71,24 +70,11 @@ export function EditorForm({
               <Switch
                 checked={Boolean(value)}
                 onChange={(e) => updateValue(field.keyPath, e.target.checked)}
-                sx={{
-                  '& .MuiSwitch-switchBase.Mui-checked': {
-                    color: '#2563eb'
-                  },
-                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                    backgroundColor: '#2563eb'
-                  }
-                }}
+                className="[&_.MuiSwitch-switchBase.Mui-checked]:text-blue-600 [&_.MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track]:bg-blue-600"
               />
             }
             label={field.label}
-            sx={{ 
-              m: 0,
-              '& .MuiFormControlLabel-label': {
-                fontWeight: 500,
-                color: '#374151'
-              }
-            }}
+            className="m-0 [&_.MuiFormControlLabel-label]:font-medium [&_.MuiFormControlLabel-label]:text-gray-700"
           />
         );
       
@@ -100,17 +86,7 @@ export function EditorForm({
               value={value ?? ''}
               onChange={(e) => updateValue(field.keyPath, e.target.value)}
               label={field.label}
-              sx={{
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#e2e8f0'
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#2563eb'
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#2563eb'
-                }
-              }}
+              className="[&_.MuiOutlinedInput-notchedOutline]:border-slate-200 [&:hover_.MuiOutlinedInput-notchedOutline]:border-blue-600 [&.Mui-focused_.MuiOutlinedInput-notchedOutline]:border-blue-600"
             >
               {field.selectOptions?.map((option) => (
                 <MenuItem key={option} value={option}>
@@ -130,19 +106,7 @@ export function EditorForm({
             label={field.label}
             value={value ?? ''}
             onChange={(e) => updateValue(field.keyPath, Number(e.target.value))}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: '#e2e8f0'
-                },
-                '&:hover fieldset': {
-                  borderColor: '#2563eb'
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#2563eb'
-                }
-              }
-            }}
+            className="[&_.MuiOutlinedInput-root_fieldset]:border-slate-200 [&_.MuiOutlinedInput-root:hover_fieldset]:border-blue-600 [&_.MuiOutlinedInput-root.Mui-focused_fieldset]:border-blue-600"
           />
         );
       
@@ -155,127 +119,74 @@ export function EditorForm({
             value={value ?? ''}
             onChange={(e) => updateValue(field.keyPath, e.target.value)}
             placeholder={field.defaultValue?.toString() || ''}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: '#e2e8f0'
-                },
-                '&:hover fieldset': {
-                  borderColor: '#2563eb'
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#2563eb'
-                }
-              }
-            }}
+            className="[&_.MuiOutlinedInput-root_fieldset]:border-slate-200 [&_.MuiOutlinedInput-root:hover_fieldset]:border-blue-600 [&_.MuiOutlinedInput-root.Mui-focused_fieldset]:border-blue-600"
           />
         );
     }
   };
 
   return (
-    <Box sx={{ maxWidth: 700, mx: 'auto', p: 3 }} className="animate-fade-in">
+    <div className="max-w-[700px] mx-auto p-3 animate-fade-in">
       <Paper
         elevation={0}
-        sx={{
-          border: '1px solid #e2e8f0',
-          borderRadius: 2,
-          overflow: 'hidden'
-        }}
+        className="border border-slate-200 rounded-lg overflow-hidden"
       >
         {/* File Header */}
-        <Box
-          sx={{
-            p: 2.5,
-            backgroundColor: '#f8fafc',
-            borderBottom: '1px solid #e2e8f0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 2
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <div className="p-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-1.5">
             {isZip ? (
-              <FolderZipIcon sx={{ color: '#8b5cf6', fontSize: 24 }} />
+              <FolderZipIcon className="text-purple-500 text-2xl" />
             ) : (
-              <InsertDriveFileIcon sx={{ color: '#f59e0b', fontSize: 24 }} />
+              <InsertDriveFileIcon className="text-amber-500 text-2xl" />
             )}
-            <Box>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#1e293b' }}>
+            <div>
+              <Typography variant="subtitle1" className="font-semibold text-slate-800">
                 {fileName}
               </Typography>
-              <Typography variant="caption" sx={{ color: '#64748b' }}>
+              <Typography variant="caption" className="text-slate-500">
                 {isZip ? t('zipFile') : 'JSON'}
               </Typography>
-            </Box>
-          </Box>
+            </div>
+          </div>
           <Chip
             label={isZip ? 'package.json' : t('editingFile')}
             size="small"
-            sx={{
-              backgroundColor: isZip ? 'rgba(139, 92, 246, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-              color: isZip ? '#8b5cf6' : '#f59e0b',
-              fontWeight: 500
-            }}
+            className={isZip ? 'bg-purple-50 text-purple-500 font-medium' : 'bg-amber-50 text-amber-500 font-medium'}
           />
-        </Box>
+        </div>
 
         {/* Form Fields */}
-        <Box sx={{ p: 3 }}>
+        <div className="p-3">
           {fields.length === 0 ? (
-            <Alert severity="info" sx={{ mb: 2 }}>
+            <Alert severity="info" className="mb-2">
               {t('noFieldsDefined')} {t('goToSettings')}
             </Alert>
           ) : (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            <div className="flex flex-col gap-2.5">
               {fields.map((field) => (
-                <Box key={field.id}>
+                <div key={field.id}>
                   <Typography
                     variant="caption"
-                    sx={{
-                      display: 'block',
-                      mb: 0.5,
-                      color: '#94a3b8',
-                      fontFamily: 'monospace',
-                      fontSize: '0.7rem'
-                    }}
+                    className="block mb-0.5 text-slate-400 font-mono text-xs"
                   >
                     {field.keyPath}
                   </Typography>
                   {renderField(field)}
-                </Box>
+                </div>
               ))}
-            </Box>
+            </div>
           )}
-        </Box>
+        </div>
 
         <Divider />
 
         {/* Actions */}
-        <Box
-          sx={{
-            p: 2.5,
-            backgroundColor: '#fafafa',
-            display: 'flex',
-            justifyContent: 'space-between',
-            gap: 2
-          }}
-        >
+        <div className="p-2.5 bg-gray-50 flex justify-between gap-2">
           <Button
             variant="outlined"
             startIcon={<CloseIcon />}
             onClick={onClose}
-            sx={{
-              textTransform: 'none',
-              borderColor: '#e2e8f0',
-              color: '#64748b',
-              '&:hover': {
-                borderColor: '#cbd5e1',
-                backgroundColor: '#f1f5f9'
-              }
-            }}
+            className="normal-case border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50"
           >
             {t('closeFile')}
           </Button>
@@ -284,23 +195,12 @@ export function EditorForm({
             startIcon={<SaveIcon />}
             onClick={handleSave}
             disabled={isSaving || fields.length === 0}
-            sx={{
-              backgroundColor: '#2563eb',
-              textTransform: 'none',
-              fontWeight: 600,
-              px: 3,
-              boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)',
-              '&:hover': {
-                backgroundColor: '#1d4ed8'
-              },
-              '&:disabled': {
-                backgroundColor: '#94a3b8'
-              }
-            }}
+            className="bg-blue-600 normal-case font-semibold px-3 hover:bg-blue-700 disabled:bg-slate-400"
+            style={{ boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)' }}
           >
             {isSaving ? t('loading') : t('save')}
           </Button>
-        </Box>
+        </div>
       </Paper>
 
       {/* Success Snackbar */}
@@ -313,7 +213,7 @@ export function EditorForm({
         <Alert
           onClose={() => setShowSuccess(false)}
           severity="success"
-          sx={{ width: '100%' }}
+          className="w-full"
         >
           {t('saveSuccess')}
         </Alert>
@@ -323,17 +223,17 @@ export function EditorForm({
       <Snackbar
         open={Boolean(saveError)}
         autoHideDuration={5000}
-        onClose={() => setSaveError(null)}
+        onClose={() => setSaveError(undefined)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert
-          onClose={() => setSaveError(null)}
+          onClose={() => setSaveError(undefined)}
           severity="error"
-          sx={{ width: '100%' }}
+          className="w-full"
         >
           {saveError}
         </Alert>
       </Snackbar>
-    </Box>
+    </div>
   );
 }

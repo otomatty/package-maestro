@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Alert, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { Alert, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { Header } from '@/components/Header';
 import { DropZone } from '@/components/DropZone';
 import { EditorForm } from '@/components/EditorForm';
@@ -82,14 +82,14 @@ const Index = () => {
   } = useFileHandler();
 
   if (!isLoaded) {
-    return null;
+    return undefined;
   }
 
   return (
     <ThemeProvider theme={theme}>
       <LanguageProvider>
         <CssBaseline />
-        <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+        <div className="min-h-screen bg-slate-50">
           <Header 
             onSettingsClick={() => setShowSettings(!showSettings)} 
             showSettings={showSettings}
@@ -98,18 +98,18 @@ const Index = () => {
           <BrowserWarning />
 
           {error && (
-            <Box sx={{ p: 2, maxWidth: 700, mx: 'auto' }}>
+            <div className="p-2 max-w-[700px] mx-auto">
               <Alert 
                 severity="error" 
-                onClose={() => setError(null)}
-                sx={{ borderRadius: 2 }}
+                onClose={() => setError(undefined)}
+                className="rounded-lg"
               >
                 {error}
               </Alert>
-            </Box>
+            </div>
           )}
 
-          <Box sx={{ py: 3 }}>
+          <div className="py-3">
             {showSettings ? (
               <SettingsPanel
                 config={config}
@@ -148,8 +148,8 @@ const Index = () => {
                 isLoading={isLoading}
               />
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
       </LanguageProvider>
     </ThemeProvider>
   );

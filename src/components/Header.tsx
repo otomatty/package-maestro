@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, IconButton, Tooltip, Box, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Tooltip, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CodeIcon from '@mui/icons-material/Code';
 import { useLanguage } from '@/i18n/LanguageContext';
@@ -15,76 +15,40 @@ export function Header({ onSettingsClick, showSettings }: HeaderProps) {
     <AppBar 
       position="static" 
       elevation={0}
-      sx={{ 
-        backgroundColor: 'white',
-        borderBottom: '1px solid',
-        borderColor: 'divider'
-      }}
+      className="bg-white border-b border-slate-200"
     >
-      <Toolbar sx={{ minHeight: 64 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Box
-            sx={{
-              width: 36,
-              height: 36,
-              borderRadius: 1.5,
-              background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)'
-            }}
+      <Toolbar className="min-h-[64px]">
+        <div className="flex items-center gap-1.5">
+          <div
+            className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 flex items-center justify-center shadow-lg"
+            style={{ boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)' }}
           >
-            <CodeIcon sx={{ color: 'white', fontSize: 20 }} />
-          </Box>
-          <Box>
+            <CodeIcon className="text-white text-xl" />
+          </div>
+          <div>
             <Typography 
               variant="h6" 
-              sx={{ 
-                fontWeight: 700,
-                color: '#1e293b',
-                fontSize: '1.1rem',
-                lineHeight: 1.2
-              }}
+              className="font-bold text-slate-800 text-lg leading-tight"
             >
               {t('appTitle')}
             </Typography>
             <Typography 
               variant="caption" 
-              sx={{ 
-                color: '#64748b',
-                fontSize: '0.75rem'
-              }}
+              className="text-slate-500 text-xs"
             >
               {t('appSubtitle')}
             </Typography>
-          </Box>
-        </Box>
+          </div>
+        </div>
         
-        <Box sx={{ flexGrow: 1 }} />
+        <div className="flex-grow" />
 
         <ToggleButtonGroup
           value={language}
           exclusive
           onChange={(_, newLang) => newLang && setLanguage(newLang)}
           size="small"
-          sx={{ 
-            mr: 2,
-            '& .MuiToggleButton-root': {
-              px: 1.5,
-              py: 0.5,
-              fontSize: '0.75rem',
-              fontWeight: 600,
-              border: '1px solid #e2e8f0',
-              '&.Mui-selected': {
-                backgroundColor: '#2563eb',
-                color: 'white',
-                '&:hover': {
-                  backgroundColor: '#1d4ed8'
-                }
-              }
-            }
-          }}
+          className="mr-2 [&_.MuiToggleButton-root]:px-1.5 [&_.MuiToggleButton-root]:py-0.5 [&_.MuiToggleButton-root]:text-xs [&_.MuiToggleButton-root]:font-semibold [&_.MuiToggleButton-root]:border [&_.MuiToggleButton-root]:border-slate-200 [&_.MuiToggleButton-root.Mui-selected]:bg-blue-600 [&_.MuiToggleButton-root.Mui-selected]:text-white [&_.MuiToggleButton-root.Mui-selected:hover]:bg-blue-700"
         >
           <ToggleButton value="ja">日本語</ToggleButton>
           <ToggleButton value="en">EN</ToggleButton>
@@ -93,13 +57,7 @@ export function Header({ onSettingsClick, showSettings }: HeaderProps) {
         <Tooltip title={showSettings ? t('backToEditor') : t('presetSettings')}>
           <IconButton 
             onClick={onSettingsClick}
-            sx={{ 
-              backgroundColor: showSettings ? '#2563eb' : '#f1f5f9',
-              color: showSettings ? 'white' : '#64748b',
-              '&:hover': {
-                backgroundColor: showSettings ? '#1d4ed8' : '#e2e8f0'
-              }
-            }}
+            className={showSettings ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}
           >
             <SettingsIcon />
           </IconButton>
