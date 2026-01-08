@@ -28,15 +28,9 @@ export function Header({ onSettingsClick, showSettings }: HeaderProps) {
           <div>
             <Typography 
               variant="h6" 
-              className="font-bold text-slate-800 text-lg leading-tight"
+              className="font-bold text-white text-lg leading-tight"
             >
               {t('appTitle')}
-            </Typography>
-            <Typography 
-              variant="caption" 
-              className="text-slate-500 text-xs"
-            >
-              {t('appSubtitle')}
             </Typography>
           </div>
         </div>
